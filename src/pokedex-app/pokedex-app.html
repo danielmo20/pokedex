@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="pokedex-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+
+	<iron-ajax
+	   url="https://pokeapi.co/api/v2/pokemon/"
+	   auto
+	   handle-as="json"
+	   last-response="{{data}}"
+	></iron-ajax>
+
+	<template is="dom-repeat" items="[[data.results]]">
+      <span>[[item.name]]</span>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class PokedexApp extends Polymer.Element {
+      static get is() { return 'pokedex-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'pokedex-app'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(PokedexApp.is, PokedexApp);
+  </script>
+</dom-module>
