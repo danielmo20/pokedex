@@ -7,13 +7,13 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 
-<dom-module id="pokedex-app">
+<dom-module id="pokemon-view">
   <template>
 
 <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
-        pattern="/"
+        pattern="/pokemon"
         data="{{routeData}}"
         tail="{{subroute}}">
     </app-route>
@@ -59,9 +59,10 @@
 <template is="dom-if" if="{{loading}}">
       <paper-spinner active></paper-spinner>
     </template>	
+
 	<template if="{{!loading}}" is="dom-if">
 		<p align="center">
-		<iron-icon icon="hardware:keyboard-arrow-left" class="icon-page-controls" on-click="prevPage" hidden="{{_isFirstPage}}"></iron-icon>
+		<iron-icon icon="hardware:keyboard-arrow-left" class="icon-page-controls" on-click="prevPage" hidden="{{!isFirstPage}}"></iron-icon>
 		<iron-icon icon="hardware:keyboard-arrow-right" class="icon-page-controls" on-click="nextPage"></iron-icon>
 		</p>
 	</template>
@@ -82,18 +83,19 @@
 
 	    </div>
   </template>
+
   <script>
     /**
      * @customElement
      * @polymer
      */
-    class PokedexApp extends Polymer.Element {
-      static get is() { return 'pokedex-app'; }
+ class PokemonView extends Polymer.Element {
+      static get is() { return 'pokemon-view'; }
       static get properties() {
         return {
           prop1: {
             type: String,
-            value: 'pokedex-app'
+            value: 'pokemon-view'
           },
 		pageLimit:{
 			type: Number,
@@ -101,32 +103,24 @@
 		},
 		currentPage:{
 			type: Number,
-			value: 0,
-			observer: 'pageObserver',
-			notify: true
-		},
-		_isFirstPage:{
-			type: Boolean,
-			computed: 'isFirstPage(currentPage)'
+			value: 0
 		}
         };
       }
 	displayIndex(url) {
-                return url.substring(34, url.length -1 );
+                return url.substring(34, url.length -1 );;
             }
 		
-	    isFirstPage(_currentPage){
-		return _currentPage == 0;
+	    isFirstPage(){
+		return this.currentPage == 0;
 	    }
 
 	    nextPage(){
-		this.set('currentPage', (this.currentPage + this.pageLimit) );
+		this.currentPage += this.pageLimit;
+		    this.$.pokedexGetAjax.generateRequest();
 	    }
 	    prevPage(){
 		this.currentPage -= this.pageLimit;
-	    }
-	    pageObserver(_currPageNew, _currPageOld){
-	    	console.log("Observed: ", _currPageNew, _currPageOld);
 		    this.$.pokedexGetAjax.generateRequest();
 	    }
 ready() {
