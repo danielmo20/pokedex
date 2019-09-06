@@ -1,0 +1,109 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="pokemon-view">
+  <template>
+
+<app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/pokemon"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+    <style>
+      :host {
+        display: flex;
+      }
+	
+      .container{
+      	width: 85%;
+	max-width: 740px;
+	margin: 0 auto;
+	margin-top: 1em;
+      }
+	
+    </style>
+    <iron-ajax
+	id="pokedexGetDetailAjax"
+	url="{{url}}"
+	   handle-as="json"
+	   last-response="{{data}}"
+	   loading="{{loading}}"
+	></iron-ajax>
+
+    <paper-dialog id="dialog" >
+
+	<template is="dom-if" if="{{loading}}">
+      		<paper-spinner active></paper-spinner>
+    	</template>	
+
+	    <h2>  <strong>#{{data.id}}</strong> {{data.name}} <paper-button dialog-dismiss><iron-icon icon="close"></iron-icon></paper-button></h2>
+			<img src="{{data.sprites.front_default}}" />	
+			<img src="{{data.sprites.back_default}}" />	
+			
+		<paper-dialog-scrollable>
+			<h3>Moves</h3>
+			<ul>
+			<template is="dom-repeat" items="[[data.moves]]" as="move">
+				<li>{{move.move.name}}</li>
+			</template>
+			</ul>
+			<h3>Abilities</h3>
+			<ul>
+			<template is="dom-repeat" items="[[data.abilities]]" as="ability">
+				<li>{{ability.ability.name}}</li>
+			</template>
+			</ul>
+		</paper-dialog-scrollable> 	
+	<div class="buttons">
+          
+        </div>
+	</paper-dialog>	
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+ class PokemonView extends Polymer.Element {
+      static get is() { return 'pokemon-view'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'pokemon-view'
+          },
+		url: {
+			type: String
+		},
+		name:{
+			type: String
+		},
+		pokeId:{
+			type: String
+		},
+		moves:{
+			type: Array
+		},
+		abilities:{
+			type: Array
+		},
+		types:{
+			type: Array
+		}
+        };
+      }
+    }
+
+    window.customElements.define(PokemonView.is, PokemonView);
+  </script>
+</dom-module>

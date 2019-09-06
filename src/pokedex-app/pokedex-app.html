@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="pokemon-view.html">
 
 
 <dom-module id="pokedex-app">
@@ -68,16 +69,22 @@
 
 	<template is="dom-repeat" if="{{!loading}}" items="[[data.results]]" as="pokemon">
     	
-		<paper-card width="200px" height="500px" image="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{displayIndex(pokemon.url)}}.png">
+		<paper-card width="200px" height="500px" 
+			image="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{displayIndex(pokemon.url)}}.png"
+			on-click="showInfo" data-url$="[[pokemon.url]]">
       <div class="card-content" >
 	      <strong>	#{{displayIndex(pokemon.url)}}</strong> </br> {{pokemon.name}}
       </div>
       </paper-card>	
+
 	</template>
+
+      <pokemon-view id="pokemonView" ></pokemon-view>
 	<template if="{{!loading}}" is="dom-if">
 		<p align="center">
-		<iron-icon icon="hardware:keyboard-arrow-left" class="icon-page-controls" on-click="prevPage" hidden="{{!isFirstPage}}"></iron-icon>
-		<iron-icon icon="hardware:keyboard-arrow-right" class="icon-page-controls" on-click="nextPage"></iron-icon>		</p>
+		<iron-icon icon="hardware:keyboard-arrow-left" class="icon-page-controls" on-click="prevPage" hidden="{{_isFirstPage}}"></iron-icon>
+		<iron-icon icon="hardware:keyboard-arrow-right" class="icon-page-controls" on-click="nextPage"></iron-icon>
+		</p>
 	</template>
 
 	    </div>
@@ -126,9 +133,14 @@
 		this.currentPage -= this.pageLimit;
 	    }
 	    pageObserver(_currPageNew, _currPageOld){
-	    	console.log("Observed: ", _currPageNew, _currPageOld);
 		    this.$.pokedexGetAjax.generateRequest();
 	    }
+	showInfo(e){
+		console.log("fecthing...", e.target.dataset.url);
+		this.$.pokemonView.set("url",  e.target.dataset.url);
+	    	this.$.pokemonView.$.pokedexGetDetailAjax.generateRequest();
+	    	this.$.pokemonView.$.dialog.toggle();
+	}
 ready() {
   super.ready();
 	this.$.pokedexGetAjax.generateRequest();
